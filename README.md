@@ -3,7 +3,8 @@
 # How to compile and run
 
 #csharp  
-
+	To compile:				mcs collatz.cs -r:System.Numerics.dll
+	To run:					mono collatz.exe 50 100
 #fortran  
 
 #julia  
@@ -16,7 +17,8 @@
 # rust
 
 # recursedcsharp  
-
+	To compile:				mcs rcollatz.cs -r:System.Numerics.dll
+	To run:					mono rcollatz.exe 50 100 
 # recursedfortran  
 
 # recursedjulia  
