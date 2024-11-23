@@ -1,6 +1,31 @@
 # Collatz 
 
+# How to compile and run
 
+#csharp  
+
+#fortran  
+
+#julia  
+
+#lisp  
+
+#python 
+	To compile and run: 			python3 collatz.py 50 100 
+
+# rust
+
+# recursedcsharp  
+
+# recursedfortran  
+
+# recursedjulia  
+
+# recursedlisp  
+
+# recursedpython  
+	To compile and run:                     python3 rcollatz.py 50 100
+# recursedrust  
 
 ## Getting started
 
