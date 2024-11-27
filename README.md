@@ -5,29 +5,48 @@
 #csharp  
 	To compile:				mcs collatz.cs -r:System.Numerics.dll
 	To run:					mono collatz.exe 50 100
+
 #fortran  
+	To compile:				gfortran -o collatz collatz.f90
+	To run:					./collatz 50 100
 
 #julia  
+	To compile and run:			julia collatz.jl 50 100 
 
 #lisp  
+	To compile:				chmod u+x collatz.lisp
+	To run:					./collatz.lisp 50 100
 
 #python 
 	To compile and run: 			python3 collatz.py 50 100 
 
 # rust
+	To compile:				cargo build
+	To run: 				cargo run 50 100
 
 # recursedcsharp  
 	To compile:				mcs rcollatz.cs -r:System.Numerics.dll
 	To run:					mono rcollatz.exe 50 100 
+
 # recursedfortran  
+	To compile:                             gfortran -o rcollatz rcollatz.f90
+        To run:                                 ./rcollatz 50 100
 
 # recursedjulia  
+	To compile and run:                     julia rcollatz.jl 50 100
 
 # recursedlisp  
+	To compile:                             chmod u+x rcollatz.lisp
+        To run:                                 ./rcollatz.lisp 50 100
 
 # recursedpython  
 	To compile and run:                     python3 rcollatz.py 50 100
+
 # recursedrust  
+        To compile:                             cargo build
+        To run:                                 cargo run 50 100
+
+
 
 ## Getting started
 
