@@ -1,16 +1,15 @@
 program CollatzProgram
         implicit none
-        integer :: start, end, i, length
-        integer(kind=8), allocatable :: numbers(:)
-        integer, allocatable :: lengths(:)
+        integer :: start, end_, i
+        integer(kind=8) :: num
+        integer(kind=8), dimension(10) :: top_numbers
+        integer, dimension(10) :: top_lengths
+        integer :: top_count
         integer :: status
         character(len=100) :: arg1, arg2
-        integer(kind=8), dimension(10) :: top_numbers   ! top 10 numbers
-        integer, dimension(10) :: top_lengths           ! and corresponding sequence lengths 
-        integer :: top_count
+        integer :: length
         logical :: found
         integer :: j, min_length, min_index
-        integer :: num_elements
 
         call get_command_argument(1, arg1, status)
         call get_command_argument(2, arg2, status)
@@ -26,37 +25,26 @@ program CollatzProgram
                 stop
         endif
 
-        read(arg2, *, iostat=status) end
+        read(arg2, *, iostat=status) end_
         if (status /= 0) then
                 print *, 'Error: End value must be an integer.'
                 stop
         endif
 
-        num_elements = end - start + 1                 ! calculate number of elements in the range
-
-        allocate(numbers(num_elements))
-        allocate(lengths(num_elements))
-
         top_numbers = -1_8
         top_lengths = -1
         top_count = 0
 
-        ! Compute Collatz lengths for each number 
-        do i = 1, num_elements
-                numbers(i) = int(start + i - 1, kind=8)
-                lengths(i) = collatz_length(numbers(i))
-        end do
-
         ! Identify the top 10 numbers with the longest sequence 
-        do i = 1, num_elements
-                length = lengths(i)
+        do num = start, end_
+                length = collatz_length(num)
                 found = .false.
                 ! ceck if the current length is already in the top results
                 do j = 1, top_count
                         if (top_lengths(j) == length) then
                                 found = .true.
-                                if (numbers(i) < top_numbers(j)) then
-                                        top_numbers(j) = numbers(i)
+                                if (num < top_numbers(j)) then
+                                        top_numbers(j) = num
                                 end if
                                 exit
                         end if
@@ -66,7 +54,7 @@ program CollatzProgram
                 if (.not. found) then
                         if (top_count < 10) then
                                 top_count = top_count + 1
-                                top_numbers(top_count) = numbers(i)
+                                top_numbers(top_count) = num
                                 top_lengths(top_count) = length
                         else
                                 min_length = top_lengths(1)
@@ -80,10 +68,10 @@ program CollatzProgram
                                         end if
                                 end do
                                 if (length > min_length) then
-                                        top_numbers(min_index) = numbers(i)
+                                        top_numbers(min_index) = num
                                         top_lengths(min_index) = length
-                                elseif (length == min_length .and. numbers(i) < top_numbers(min_index)) then
-                                        top_numbers(min_index) = numbers(i)
+                                elseif (length == min_length .and. num < top_numbers(min_index)) then
+                                        top_numbers(min_index) = num
                                 end if
                         end if
                 end if
@@ -135,6 +123,7 @@ contains
                 integer :: i, j
                 integer(kind=8) :: temp_num
                 integer :: temp_length
+
                 do i = 1, count - 1
                         do j = i + 1, count
                                 if (by_length) then

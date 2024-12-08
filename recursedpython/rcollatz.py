@@ -1,4 +1,5 @@
 import sys
+sys.setrecursionlimit(10**7)  # Increase recursion limit if dealing with large numbers
 
 # Recursive method to compute the length of the Collatz sequence for a given number
 def collatz_length(n):
@@ -11,26 +12,37 @@ def collatz_length(n):
 
 # Method to find the 10 integers with the longest Collatz sequences in a given range
 def find_top_10_collatz_numbers(start, end):
-    collatz_list = []
-    for num in range(start, end + 1):
-        length = collatz_length(num)
-        collatz_list.append((length, num))
-    
-    # Sort by sequence length descending, then by number ascending
-    collatz_list.sort(key=lambda x: (-x[0], x[1]))
-    
-    # Collect the top 10 numbers with unique sequence lengths
-    top_combined = []
-    seen_lengths = set()
-    for length, num in collatz_list:
-        if length not in seen_lengths:
-            top_combined.append((num, length))
-            seen_lengths.add(length)
-        if len(top_combined) == 10:
-            break
-    return top_combined
+    top_results = []    # list of (length, num) with at most 10 entries
+    seen_lengths = {}   
 
-# Main method to handle overall program flow
+    for num in range(start, end + 1):
+        clength = collatz_length(num)
+
+        # Check if we have seen this length before
+        if clength in seen_lengths:
+            # If the current number is smaller, update it
+            if num < seen_lengths[clength][1]:
+                seen_lengths[clength] = (clength, num)
+        else:
+            if len(top_results) < 10:   # new length found 
+                top_results.append((clength, num))
+                seen_lengths[clength] = (clength, num)
+            else:
+            # top_results full, then check if the new length is better than the smallest one
+                top_results.sort(key=lambda x: x[0])
+                smallest_length, smallest_num = top_results[0]  # Sort by length ascending to find the smallest length easily
+                if clength > smallest_length:
+                    removed_length = top_results.pop(0)     # remove smallest and add new one 
+                    del seen_lengths[removed_length[0]]
+            
+                    top_results.append((clength, num))
+                    seen_lengths[clength] = (clength, num)
+    
+    # Sort by length descending, then number ascending
+    top_results.sort(key=lambda x: (-x[0], x[1]))
+    final_top_10 = [(num, length) for length, num in top_results]   # convert to (num, length) format
+    return final_top_10    
+
 def main():
     if len(sys.argv) != 3:
         print("Usage: python collatz.py <start> <end>")
