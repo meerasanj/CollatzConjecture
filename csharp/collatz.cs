@@ -22,46 +22,55 @@ class CollatzProgram {
 
 	// Method to find the 10 integers with the longest Collatz sequences in a given range
 	static List<(int Number, int Length)> FindTop10CollatzNumbers(int start, int end) {
-		var collatzList = new List<(int Number, int Length)>();
+		var topNumbers = new List<(int Number, int Length)>();
 
-		for (int num = start; num <= end; num++) {
-			int length = CollatzLength(num);
-			collatzList.Add((num, length));
-		}
+                for (int num = start; num <= end; num++) {
+                        int length = CollatzLength(num);
 
-		// Sort by sequence length descending, then by number ascending
-		var sortedList = collatzList
-            		.OrderByDescending(x => x.Length)
-            		.ThenBy(x => x.Number)
-            		.ToList();
+			// Check if we already have this length
+                        var existing = topNumbers.FirstOrDefault(x => x.Length == length);
+                        if (existing.Length == length) {
+                                if (num < existing.Number) {
+                                        topNumbers.Remove(existing);
+                                        topNumbers.Add((num, length));
+                                }
+                        } else { // New length
+                                if (topNumbers.Count < 10) {
+                                        topNumbers.Add((num, length));
+                                } else { // Top 10 is full, find the smallest length entry
+                                        var minEntry = topNumbers
+                                                .OrderBy(x => x.Length)
+                                                .ThenByDescending(x => x.Number)
+                                                .First();
+                                        if (length > minEntry.Length) {
+                                                topNumbers.Remove(minEntry);
+                                                topNumbers.Add((num, length));
+                                        } else if (length == minEntry.Length && num < minEntry.Number) {
+                                                topNumbers.Remove(minEntry);
+                                                topNumbers.Add((num, length));
+                                        }
+                                }
+                        }
+                }
 
-		// Collect the top 10 numbers with unique sequence lengths
-		var topCombined = new List<(int Number, int Length)>();
-        	var seenLengths = new HashSet<int>();
-			
-		foreach (var item in sortedList) {
-			if (!seenLengths.Contains(item.Length)) {
-				topCombined.Add(item);
-				seenLengths.Add(item.Length);
-			}
-			if (topCombined.Count == 10)
-				break;
-		}
-		return topCombined;
+		// Sort by sequence length descending, then number ascending
+                topNumbers = topNumbers
+                        .OrderByDescending(x => x.Length)
+                        .ThenBy(x => x.Number)
+                        .ToList();
+
+                return topNumbers;
 	}
 
 	// Main method to handle overall program flow
 	static void Main(string[] args) {
-		int start = 0;
-		int end = 0;
-
 		if (args.Length != 2) {
 			Console.WriteLine("Usage: CollatzProgram <start> <end>");
 			return;
 		}
 
 		// parse command line args into integers 
-		if (!int.TryParse(args[0], out start) || !int.TryParse(args[1], out end)) {
+		if (!int.TryParse(args[0], out int start) || !int.TryParse(args[1], out int end)) {
     			Console.WriteLine("Error: Start and end values must be integers.");
     			return;
 		}

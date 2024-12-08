@@ -14,27 +14,44 @@ end
 
 # Function to find the top 10 numbers with the longest Collatz sequences in a range
 function find_top_10_collatz_numbers(start, end_)
-    	collatz_list = [] # List to store (sequence length, number)
-    	for num in start:end_
-        	seq_length = collatz_length(num)	# compute
-        	push!(collatz_list, (seq_length, num))	# add pair to list 
-    	end
+	top_results = [] 	# small list of up to 10 results: (number, seq_length)
+	for num in start:end_
+		seq_length = collatz_length(num)
+		
+		# Check if this sequence length exists in top_results
+		existing_index = findfirst(x -> x[2] == seq_length, top_results)
+		if existing_index !== nothing
+			if num < top_results[existing_index][1]
+				top_results[existing_index] = (num, seq_length)
+			end
+		else
+			 # New length not in top_results
+			if length(top_results) < 10
+				push!(top_results, (num, seq_length))
+			else 
+				min_length = top_results[1][2]
+				min_index = 1
+				for i in 2:length(top_results)
+					l = top_results[i][2]
+					if l < min_length
+						min_length = l
+						min_index = i
+					elseif l == min_length && top_results[i][1] > top_results[min_index][1]
+						min_index = i
+					end
+				end
 
-	# Sort the list by sequence length descending, then by number ascending
-    	sort!(collatz_list, by = x -> (-x[1], x[2]))
-    	top_combined = []				# List to store the top 10 result
-    	seen_lengths = Set{Int}()			# Set to keep track of unique sequence lengths
-    
-	for (seq_length, num) in collatz_list
-        	if seq_length ∉ seen_lengths		# checks if unique sequence length
-            		push!(top_combined, (num, seq_length))
-            		push!(seen_lengths, seq_length)
-        	end
-        	if length(top_combined) == 10
-            		break
-        	end
-    	end
-    	return top_combined
+				if seq_length > min_length
+					top_results[min_index] = (num, seq_length)
+				elseif seq_length == min_length && num < top_results[min_index][1]
+					top_results[min_index] = (num, seq_length)
+				end
+			end
+		end
+	end
+	
+	sort!(top_results, by = x -> (-x[2], x[1]))
+    	return top_results
 end
 
 # Main method to handle overall program flow 

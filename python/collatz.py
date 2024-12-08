@@ -13,26 +13,21 @@ def collatz_length(n):
 
 # method to find the 10 integers with the longest Collatz sequences in a given range
 def find_top_10_collatz_numbers(start, end):
-    collatz_list = []
-    
+    # Dictionary: key = length, value = smallest number achieving that length
+    length_to_num = {} # will store only one entry per unique sequence length
+
     for num in range(start, end + 1):
-        length = collatz_length(num)
-        collatz_list.append((length, num))
+        clength = collatz_length(num)
+        if clength not in length_to_num or num < length_to_num[clength]:
+            length_to_num[clength] = num
 
-    # sort the list by length descending, number ascending
-    collatz_list.sort(key=lambda x: (-x[0], x[1]))
+    # Convert dictionary to a list of (num, length) pairs
+    length_num_pairs = [(num, length) for length, num in length_to_num.items()]
+    length_num_pairs.sort(key=lambda x: (-x[1], x[0]))  # Sort by length descending and then by number ascending
+        
+    top_10 = length_num_pairs[:10]
+    return top_10
 
-    top_combined = [] # store top numbers w unique lengths 
-    seen_lengths = set()
-    for length, num in collatz_list:
-        if length not in seen_lengths:
-            top_combined.append((num, length))
-            seen_lengths.add(length)
-        if len(top_combined) == 10:
-            break
-    return top_combined
-
-# main method to handle overall program flow
 def main():
     if len(sys.argv) != 3:
         print("Usage: python collatz.py <start> <end>")

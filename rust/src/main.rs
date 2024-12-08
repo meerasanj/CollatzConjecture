@@ -17,32 +17,44 @@ fn collatz_length(mut n: u64) -> u32 {
 
 // Function to find the top 10 numbers with the longest Collatz sequences in the range
 fn find_top_10_collatz_numbers(start: u64, end: u64) -> Vec<(u64, u32)> {
-    let mut collatz_list = Vec::new();  // List to store (sequence length, number)
+    let mut top_results: Vec<(u64, u32)> = Vec::new();
+        
     for num in start..=end {
         let length = collatz_length(num);
-        collatz_list.push((length, num));   // add to list 
+        
+        if let Some(pos) = top_results.iter().position(|&(_, l)| l == length) {
+            if num < top_results[pos].0 {
+                top_results[pos] = (num, length);
+            }
+        } else {
+            if top_results.len() < 10 {
+                top_results.push((num, length));
+            } else {
+                let mut min_index = 0;
+                for i in 1..top_results.len() {
+                    let (num_i, len_i) = top_results[i];
+                    let (num_min, len_min) = top_results[min_index];
+                    if len_i < len_min || (len_i == len_min && num_i > num_min) {
+                        min_index = i;
+                    }
+
+                }
+
+                let (min_num, min_len) = top_results[min_index];
+                if length > min_len || (length == min_len && num < min_num) {
+                    top_results[min_index] = (num, length);
+                }
+            }
+        }
     }
 
-    // Sort the list by sequence length descending, then by number ascending
-    collatz_list.sort_unstable_by(|a, b| {
-        b.0.cmp(&a.0).then_with(|| a.1.cmp(&b.1))
+    // Sort by sequence length descending, then number ascending
+    top_results.sort_unstable_by(|a, b| {
+        b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0))
     });
 
-    // List to store the top 10 results
-    let mut top_combined = Vec::new();
-    // Set to track unique sequence lengths
-    let mut seen_lengths = HashSet::new();
-    
-    for (length, num) in collatz_list {
-        if !seen_lengths.contains(&length) {    // checks if sequence length is unique  
-            top_combined.push((num, length));
-            seen_lengths.insert(length);
-        }
-        if top_combined.len() == 10 {
-            break;
-        }
-    }
-    top_combined
+    top_results
+
 }
 
 // main method to handle overall program flow 
