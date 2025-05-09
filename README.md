@@ -1,7 +1,7 @@
 # CollatzConjecture
 
 ## Purpose
-This project is a computational exploration of the Collatz Conjecture, a famous unsolved problem in mathematics. The Collatz Conjecture suggests that for any positive integer n, if n is even, divide it by 2, and if n is odd, multiply it by 3 and add 1. Repeating these operations will eventually result in the number 1. While the conjecture has been tested extensively, no general proof has yet been found. This project implements 12 different versions of the Collatz Conjecture, including 6 recursive implementations, in 10 different programming languages.
+This project is a computational exploration of the Collatz Conjecture, a famous unsolved problem in mathematics. The Collatz Conjecture suggests that for any positive integer n, if n is even, divide it by 2, and if n is odd, multiply it by 3 and add 1. Repeating these operations will eventually result in the number 1. While the conjecture has been tested extensively, no general proof has yet been found. This project features 12 distinct implementations of the Collatz Conjecture, including 6 recursive versions, across 6 different programming languages.
 
 The languages included in this project are:
 - C#
